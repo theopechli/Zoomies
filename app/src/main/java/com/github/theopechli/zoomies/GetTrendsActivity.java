@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +34,8 @@ public class GetTrendsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_trends);
+
+        Intent intent = getIntent();
 
         // FIXME remove deprecated AsyncTask
         new RetrieveTrendsTask(trendsList).execute();
@@ -98,7 +101,7 @@ public class GetTrendsActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<String> result) {
             super.onPostExecute(result);
-            if (!result.isEmpty()) {
+            if (result != null) {
                 mTrendsList.get().addAll(result);
             }
             Log.i(TAG, "onPostExecute done.");
