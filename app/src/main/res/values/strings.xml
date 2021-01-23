@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Zoomies</string>
     <string name="get_trends">Get Trends</string>
-    <string name="search_hashtags">Search Hashtags</string>
+    <string name="enter_hashtag">Enter hashtag</string>
+    <string name="search">search</string>
+    <string name="help_search_hashtag">Search for posts with your desired hashtag by entering it in
+        the field below and tapping search.</string>
+    <string name="help_get_trends">Tap the button below to get a list of the trending hashtags
+        and choose one to view the relevant posts.</string>
 </resources>
