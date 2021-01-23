@@ -6,4 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".TrendsActivity">
 
+    <Button
+        android:id="@+id/btnGetTrends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="getTrends"
+        android:text="@string/get_trends"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnSearchHashtags"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnSearchHashtags"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="searchHashtags"
+        android:text="@string/search_hashtags"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnGetTrends"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
