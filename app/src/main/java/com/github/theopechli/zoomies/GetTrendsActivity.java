@@ -14,10 +14,7 @@ import java.util.ArrayList;
 
 import twitter4j.Trend;
 import twitter4j.Trends;
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.conf.ConfigurationBuilder;
 
 public class GetTrendsActivity extends AppCompatActivity {
 
@@ -65,25 +62,16 @@ public class GetTrendsActivity extends AppCompatActivity {
 
             try {
                 int woeid = 1;
-                // FIXME use different configuration for the twitter api
-                ConfigurationBuilder cb = new ConfigurationBuilder();
-                cb.setDebugEnabled(true)
-                        .setOAuthConsumerKey("")
-                        .setOAuthConsumerSecret("")
-                        .setOAuthAccessToken("")
-                        .setOAuthAccessTokenSecret("");
-                TwitterFactory tf = new TwitterFactory(cb.build());
-                Twitter twitter = tf.getInstance();
-                Trends trends = twitter.getPlaceTrends(woeid);
-
+                TwitterInstance twitter = new TwitterInstance();
+                Trends trends = twitter.getTwitterInstance().getPlaceTrends(woeid);
                 Log.i(TAG, "Showing trends for " + trends.getLocation().getName());
 
-                int idx = 0;
                 for (Trend trend : trends.getTrends()) {
                     arrayList.add(trend.getName());
                 }
 
                 Log.i(TAG, "doInBackground done.");
+
                 return arrayList;
             } catch (TwitterException te) {
                 te.printStackTrace();
@@ -101,9 +89,10 @@ public class GetTrendsActivity extends AppCompatActivity {
             if (result != null) {
                 mTrendsList.get().addAll(result);
             }
-            Log.i(TAG, "onPostExecute done.");
             trendsAdapter = new TrendsAdapter(GetTrendsActivity.this, trendsList, smnLogos);
             recyclerView.setAdapter(trendsAdapter);
+
+            Log.i(TAG, "onPostExecute done.");
         }
     }
 }
