@@ -12,14 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Zoomies">
         <activity
-            android:name=".SearchHashtagsActivity"
-            android:parentActivityName=".HashtagsActivity">
-        </activity>
-        <activity
-            android:name=".GetTrendsActivity"
-            android:parentActivityName=".HashtagsActivity">
-        </activity>
-        <activity
             android:name=".HashtagsActivity"
             android:parentActivityName=".MainActivity">
         </activity>
