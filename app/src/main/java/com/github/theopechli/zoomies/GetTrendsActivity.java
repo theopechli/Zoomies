@@ -21,14 +21,13 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class GetTrendsActivity extends AppCompatActivity {
 
-    private final String TAG="GetTrendsActivity";
+    private final String TAG = "GetTrendsActivity";
 
     RecyclerView recyclerView;
     RecyclerView.Adapter trendsAdapter;
     RecyclerView.LayoutManager layoutManager;
     ArrayList<String> trendsList = new ArrayList<>();
     int[] smnLogos = {R.drawable.ic_twitter, R.drawable.ic_facebook, R.drawable.ic_instagram};
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +65,6 @@ public class GetTrendsActivity extends AppCompatActivity {
 
             try {
                 int woeid = 1;
-//            Twitter twitter = new TwitterFactory().getInstance();
-//            Trends trends = twitter.getPlaceTrends(woeid);
                 // FIXME use different configuration for the twitter api
                 ConfigurationBuilder cb = new ConfigurationBuilder();
                 cb.setDebugEnabled(true)
