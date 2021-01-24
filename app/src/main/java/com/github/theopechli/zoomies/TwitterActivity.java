@@ -20,9 +20,9 @@ import twitter4j.Trend;
 import twitter4j.Trends;
 import twitter4j.TwitterException;
 
-public class HashtagsActivity extends AppCompatActivity {
+public class TwitterActivity extends AppCompatActivity {
 
-    private final String TAG = "HashtagsActivity";
+    private final String TAG = "TwitterActivity";
 
     RecyclerView recyclerView;
     RecyclerView.Adapter trendsAdapter;
@@ -30,7 +30,6 @@ public class HashtagsActivity extends AppCompatActivity {
     ArrayList<String> trendsList = new ArrayList<>();
     int[] smnLogos = {R.drawable.ic_twitter, R.drawable.ic_facebook, R.drawable.ic_instagram};
     TwitterInstance twitter = new TwitterInstance();
-    List<twitter4j.Status> tweets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +38,15 @@ public class HashtagsActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.rvTrends);
         recyclerView.setHasFixedSize(false);
-        layoutManager = new LinearLayoutManager(HashtagsActivity.this);
+        layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        trendsAdapter = new TrendsAdapter(HashtagsActivity.this, trendsList, smnLogos);
+        trendsAdapter = new TrendsAdapter(this, trendsList, smnLogos);
         recyclerView.setAdapter(trendsAdapter);
 
         final Button btnGetTrends = findViewById(R.id.btnGetTrends);
         btnGetTrends.setOnClickListener(v -> {
             // FIXME remove deprecated AsyncTask
-            new RetrieveTrendsTask(trendsList).execute();
+            new GetTrendsTask(trendsList).execute();
         });
 
         final Button btnSearch = findViewById(R.id.btnSearch);
@@ -63,50 +62,53 @@ public class HashtagsActivity extends AppCompatActivity {
 
         @Override
         protected List<twitter4j.Status> doInBackground(String... params) {
+            Log.i(TAG, "SearchHashtagTask doInBackground start.");
+
             List<twitter4j.Status> tweets = null;
 
             try {
-                Query q = new Query(params[0]);
+                Query query = new Query(params[0]);
                 QueryResult result;
-                result = twitter.getTwitterInstance().search(q);
+                result = twitter.getTwitterInstance().search(query);
                 tweets = result.getTweets();
             } catch (TwitterException te) {
                 te.printStackTrace();
             }
+
+            Log.i(TAG, "SearchHashtagTask doInBackground done.");
 
             return tweets;
         }
 
         @Override
         protected void onPostExecute(List<twitter4j.Status> tweets) {
+            Log.i(TAG, "onPostExecute done.");
         }
     }
 
-    private class RetrieveTrendsTask extends AsyncTask<Void, Void, ArrayList<String>> {
+    private class GetTrendsTask extends AsyncTask<Void, Void, ArrayList<String>> {
 
-        // FIXME remove unnecessary reference
         private WeakReference<ArrayList<String>> mTrendsList;
 
-        RetrieveTrendsTask(ArrayList<String> arrayList) {
+        GetTrendsTask(ArrayList<String> arrayList) {
             mTrendsList = new WeakReference<>(arrayList);
         }
 
         @Override
         protected ArrayList<String> doInBackground(Void... voids) {
+            Log.i(TAG, "GetTrendsTask doInBackground start.");
+
             ArrayList<String> arrayList = new ArrayList<>();
 
             try {
                 int woeid = 1;
                 Trends trends = twitter.getTwitterInstance().getPlaceTrends(woeid);
+
                 Log.i(TAG, "Showing trends for " + trends.getLocation().getName());
 
                 for (Trend trend : trends.getTrends()) {
                     arrayList.add(trend.getName());
                 }
-
-                Log.i(TAG, "doInBackground done.");
-
-                return arrayList;
             } catch (TwitterException te) {
                 te.printStackTrace();
                 Log.i(TAG, "Failed to get trends: " + te.getMessage());
@@ -114,6 +116,8 @@ public class HashtagsActivity extends AppCompatActivity {
                 nfe.printStackTrace();
                 Log.i(TAG, "WOEID must be number");
             }
+
+            Log.i(TAG, "GetTrendsTask doInBackground done.");
 
             return arrayList;
         }
@@ -126,7 +130,7 @@ public class HashtagsActivity extends AppCompatActivity {
 
             trendsAdapter.notifyDataSetChanged();
 
-            Log.i(TAG, "onPostExecute done.");
+            Log.i(TAG, "GetTrendsTask onPostExecute done.");
         }
     }
 }
