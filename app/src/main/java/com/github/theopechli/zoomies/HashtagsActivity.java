@@ -1,18 +1,21 @@
 package com.github.theopechli.zoomies;
 
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
+import twitter4j.Query;
+import twitter4j.QueryResult;
 import twitter4j.Trend;
 import twitter4j.Trends;
 import twitter4j.TwitterException;
@@ -26,25 +29,57 @@ public class HashtagsActivity extends AppCompatActivity {
     RecyclerView.LayoutManager layoutManager;
     ArrayList<String> trendsList = new ArrayList<>();
     int[] smnLogos = {R.drawable.ic_twitter, R.drawable.ic_facebook, R.drawable.ic_instagram};
+    TwitterInstance twitter = new TwitterInstance();
+    List<twitter4j.Status> tweets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hashtags);
 
-        final Button button = findViewById(R.id.btnGetTrends);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // FIXME remove deprecated AsyncTask
-                new HashtagsActivity.RetrieveTrendsTask(trendsList).execute();
+        recyclerView = findViewById(R.id.rvTrends);
+        recyclerView.setHasFixedSize(false);
+        layoutManager = new LinearLayoutManager(HashtagsActivity.this);
+        recyclerView.setLayoutManager(layoutManager);
+        trendsAdapter = new TrendsAdapter(HashtagsActivity.this, trendsList, smnLogos);
+        recyclerView.setAdapter(trendsAdapter);
 
-                recyclerView = findViewById(R.id.rvTrends);
-                recyclerView.setHasFixedSize(false);
-                layoutManager = new LinearLayoutManager(HashtagsActivity.this);
-                recyclerView.setLayoutManager(layoutManager);
-            }
+        final Button btnGetTrends = findViewById(R.id.btnGetTrends);
+        btnGetTrends.setOnClickListener(v -> {
+            // FIXME remove deprecated AsyncTask
+            new RetrieveTrendsTask(trendsList).execute();
         });
+
+        final Button btnSearch = findViewById(R.id.btnSearch);
+        btnSearch.setOnClickListener(v -> {
+            EditText etQuery = findViewById(R.id.etQuery);
+            String query;
+            query = etQuery.getText().toString();
+            new SearchHashtagTask().execute(query);
+        });
+    }
+
+    private class SearchHashtagTask extends AsyncTask<String, Void, List<twitter4j.Status>> {
+
+        @Override
+        protected List<twitter4j.Status> doInBackground(String... params) {
+            List<twitter4j.Status> tweets = null;
+
+            try {
+                Query q = new Query(params[0]);
+                QueryResult result;
+                result = twitter.getTwitterInstance().search(q);
+                tweets = result.getTweets();
+            } catch (TwitterException te) {
+                te.printStackTrace();
+            }
+
+            return tweets;
+        }
+
+        @Override
+        protected void onPostExecute(List<twitter4j.Status> tweets) {
+        }
     }
 
     private class RetrieveTrendsTask extends AsyncTask<Void, Void, ArrayList<String>> {
@@ -62,7 +97,6 @@ public class HashtagsActivity extends AppCompatActivity {
 
             try {
                 int woeid = 1;
-                TwitterInstance twitter = new TwitterInstance();
                 Trends trends = twitter.getTwitterInstance().getPlaceTrends(woeid);
                 Log.i(TAG, "Showing trends for " + trends.getLocation().getName());
 
@@ -80,17 +114,17 @@ public class HashtagsActivity extends AppCompatActivity {
                 nfe.printStackTrace();
                 Log.i(TAG, "WOEID must be number");
             }
-            return null;
+
+            return arrayList;
         }
 
         @Override
         protected void onPostExecute(ArrayList<String> result) {
-            super.onPostExecute(result);
             if (result != null) {
                 mTrendsList.get().addAll(result);
             }
-            trendsAdapter = new TrendsAdapter(HashtagsActivity.this, trendsList, smnLogos);
-            recyclerView.setAdapter(trendsAdapter);
+
+            trendsAdapter.notifyDataSetChanged();
 
             Log.i(TAG, "onPostExecute done.");
         }
