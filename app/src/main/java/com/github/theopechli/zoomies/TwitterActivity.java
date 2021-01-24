@@ -34,7 +34,7 @@ public class TwitterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hashtags);
+        setContentView(R.layout.activity_twitter);
 
         recyclerView = findViewById(R.id.rvTrends);
         recyclerView.setHasFixedSize(false);
