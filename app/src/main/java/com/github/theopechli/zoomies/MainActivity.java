@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //TODO Twitter authentication
-        Intent intent = new Intent(this, HashtagsActivity.class);
+        Intent intent = new Intent(this, TwitterActivity.class);
         startActivity(intent);
     }
 }
