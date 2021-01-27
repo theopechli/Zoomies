@@ -12,9 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Zoomies">
         <activity
+            android:name=".PostsActivity"
+            android:parentActivityName=".HashtagsActivity"></activity>
+        <activity
             android:name=".HashtagsActivity"
-            android:parentActivityName=".MainActivity">
-        </activity>
+            android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
