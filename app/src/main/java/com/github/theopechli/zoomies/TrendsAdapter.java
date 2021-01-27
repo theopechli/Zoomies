@@ -57,6 +57,7 @@ public class TrendsAdapter extends RecyclerView.Adapter<TrendsAdapter.ViewHolder
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, PostsActivity.class);
+                intent.putExtra("com.github.theopechli.zoomies.Hashtag", trendsList.get(position));
                 context.startActivity(intent);
             }
         });
