@@ -1,10 +1,12 @@
 package com.github.theopechli.zoomies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,18 +16,20 @@ import java.util.ArrayList;
 
 public class TrendsAdapter extends RecyclerView.Adapter<TrendsAdapter.ViewHolder> {
 
-    Context context;
-    ArrayList<String> trendsList;
-    int[] smnLogos;
+    private Context context;
+    private ArrayList<String> trendsList;
+    private int[] smnLogos;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView rowName;
-        ImageView rowImage;
+        public TextView rowName;
+        public ImageView rowImage;
+        public LinearLayout linearLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             rowName = itemView.findViewById(R.id.tvTrends);
             rowImage = itemView.findViewById(R.id.ivLogo);
+            linearLayout = itemView.findViewById(R.id.linearLayout);
         }
     }
 
@@ -39,8 +43,8 @@ public class TrendsAdapter extends RecyclerView.Adapter<TrendsAdapter.ViewHolder
     @Override
     public TrendsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.single_item, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
+        View listItem = inflater.inflate(R.layout.list_item, parent, false);
+        ViewHolder viewHolder = new ViewHolder(listItem);
 
         return viewHolder;
     }
@@ -49,6 +53,13 @@ public class TrendsAdapter extends RecyclerView.Adapter<TrendsAdapter.ViewHolder
     public void onBindViewHolder(@NonNull TrendsAdapter.ViewHolder holder, int position) {
         holder.rowName.setText(trendsList.get(position));
         holder.rowImage.setImageResource(smnLogos[0]);
+        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, PostsActivity.class);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
