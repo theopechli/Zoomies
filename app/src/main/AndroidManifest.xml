@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Zoomies">
         <activity
-            android:name=".TwitterActivity"
+            android:name=".HashtagsActivity"
             android:parentActivityName=".MainActivity">
         </activity>
         <activity android:name=".MainActivity">

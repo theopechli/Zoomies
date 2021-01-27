@@ -20,9 +20,9 @@ import twitter4j.Trend;
 import twitter4j.Trends;
 import twitter4j.TwitterException;
 
-public class TwitterActivity extends AppCompatActivity {
+public class HashtagsActivity extends AppCompatActivity {
 
-    private final String TAG = "TwitterActivity";
+    private final String TAG = "HashtagsActivity";
 
     RecyclerView recyclerView;
     RecyclerView.Adapter trendsAdapter;
@@ -34,7 +34,7 @@ public class TwitterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_twitter);
+        setContentView(R.layout.activity_hashtags);
 
         recyclerView = findViewById(R.id.rvTrends);
         recyclerView.setHasFixedSize(false);
