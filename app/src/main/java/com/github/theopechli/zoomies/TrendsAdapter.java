@@ -53,13 +53,10 @@ public class TrendsAdapter extends RecyclerView.Adapter<TrendsAdapter.ViewHolder
     public void onBindViewHolder(@NonNull TrendsAdapter.ViewHolder holder, int position) {
         holder.rowName.setText(trendsList.get(position));
         holder.rowImage.setImageResource(twitterLogo);
-        holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, PostsActivity.class);
-                intent.putExtra("com.github.theopechli.zoomies.hashtag", trendsList.get(position));
-                context.startActivity(intent);
-            }
+        holder.constraintLayout.setOnClickListener(view -> {
+            Intent intent = new Intent(context, PostsActivity.class);
+            intent.putExtra("com.github.theopechli.zoomies.hashtag", trendsList.get(position));
+            context.startActivity(intent);
         });
     }
 
