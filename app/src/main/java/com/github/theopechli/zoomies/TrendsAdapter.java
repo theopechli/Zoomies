@@ -6,10 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -23,13 +23,13 @@ public class TrendsAdapter extends RecyclerView.Adapter<TrendsAdapter.ViewHolder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView rowName;
         public ImageView rowImage;
-        public LinearLayout linearLayout;
+        public ConstraintLayout constraintLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             rowName = itemView.findViewById(R.id.tvTrends);
             rowImage = itemView.findViewById(R.id.ivLogo);
-            linearLayout = itemView.findViewById(R.id.linearLayout);
+            constraintLayout = itemView.findViewById(R.id.constraintLayout);
         }
     }
 
@@ -53,7 +53,7 @@ public class TrendsAdapter extends RecyclerView.Adapter<TrendsAdapter.ViewHolder
     public void onBindViewHolder(@NonNull TrendsAdapter.ViewHolder holder, int position) {
         holder.rowName.setText(trendsList.get(position));
         holder.rowImage.setImageResource(smnLogos[0]);
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+        holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, PostsActivity.class);
