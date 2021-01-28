@@ -18,7 +18,7 @@ public class TrendsAdapter extends RecyclerView.Adapter<TrendsAdapter.ViewHolder
 
     private Context context;
     private ArrayList<String> trendsList;
-    private int[] smnLogos;
+    private int twitterLogo;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView rowName;
@@ -33,10 +33,10 @@ public class TrendsAdapter extends RecyclerView.Adapter<TrendsAdapter.ViewHolder
         }
     }
 
-    public TrendsAdapter(Context context, ArrayList<String> trendsList, int[] smnLogos) {
+    public TrendsAdapter(Context context, ArrayList<String> trendsList, int twitterLogo) {
         this.context = context;
         this.trendsList = trendsList;
-        this.smnLogos = smnLogos;
+        this.twitterLogo = twitterLogo;
     }
 
     @NonNull
@@ -52,12 +52,12 @@ public class TrendsAdapter extends RecyclerView.Adapter<TrendsAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull TrendsAdapter.ViewHolder holder, int position) {
         holder.rowName.setText(trendsList.get(position));
-        holder.rowImage.setImageResource(smnLogos[0]);
+        holder.rowImage.setImageResource(twitterLogo);
         holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, PostsActivity.class);
-                intent.putExtra("com.github.theopechli.zoomies.Hashtag", trendsList.get(position));
+                intent.putExtra("com.github.theopechli.zoomies.hashtag", trendsList.get(position));
                 context.startActivity(intent);
             }
         });
