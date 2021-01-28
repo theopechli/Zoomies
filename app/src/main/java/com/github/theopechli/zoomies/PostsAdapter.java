@@ -1,6 +1,8 @@
 package com.github.theopechli.zoomies;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,12 +53,14 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     }
 
     public void onBindViewHolder(@NonNull PostsAdapter.ViewHolder holder, int position) {
-        holder.rowName.setText(postsList.get(position).getText().toString());
+        holder.rowName.setText(postsList.get(position).getText());
         holder.rowImage.setImageResource(smnLogos[0]);
-        holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
+        holder.constraintLayout.setOnClickListener(view -> {
+            final Bundle bundle = new Bundle();
+            bundle.putBinder("post", new ObjectWrapperForBinder(postsList.get(position)));
+            Intent intent = new Intent(context, PostDetailsActivity.class);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
         });
     }
 
