@@ -57,7 +57,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         holder.rowImage.setImageResource(smnLogos[0]);
         holder.constraintLayout.setOnClickListener(view -> {
             final Bundle bundle = new Bundle();
-            bundle.putBinder("post", new ObjectWrapperForBinder(postsList.get(position)));
+            bundle.putBinder("status", new ObjectWrapperForBinder(postsList.get(position)));
             Intent intent = new Intent(context, PostDetailsActivity.class);
             intent.putExtras(bundle);
             context.startActivity(intent);
