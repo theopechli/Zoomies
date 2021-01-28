@@ -2,7 +2,6 @@ package com.github.theopechli.zoomies;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -10,43 +9,45 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
 
-import twitter4j.Query;
-import twitter4j.QueryResult;
 import twitter4j.Trend;
 import twitter4j.Trends;
 import twitter4j.TwitterException;
 
 public class HashtagsActivity extends AppCompatActivity {
 
-    private final String TAG = "HashtagsActivity";
-
-    RecyclerView recyclerView;
-    RecyclerView.Adapter trendsAdapter;
-    RecyclerView.LayoutManager layoutManager;
-    ArrayList<String> trendsList = new ArrayList<>();
-    int[] smnLogos = {R.drawable.ic_twitter, R.drawable.ic_facebook, R.drawable.ic_instagram};
-    TwitterInstance twitter = new TwitterInstance();
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter trendsAdapter;
+    private RecyclerView.LayoutManager layoutManager;
+    private ArrayList<String> trendsList = new ArrayList<>();
+    private int twitterLogo = R.drawable.ic_twitter;
+    private TwitterInstance twitterInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hashtags);
 
+        if (DataHolder.getInstance().getTwitterInstance() == null) {
+            twitterInstance = new TwitterInstance();
+            DataHolder.getInstance().setTwitterInstance(twitterInstance);
+        }
+        else {
+            twitterInstance = DataHolder.getInstance().getTwitterInstance();
+        }
+
         recyclerView = findViewById(R.id.rvTrends);
         recyclerView.setHasFixedSize(false);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        trendsAdapter = new TrendsAdapter(this, trendsList, smnLogos);
+        trendsAdapter = new TrendsAdapter(this, trendsList, twitterLogo);
         recyclerView.setAdapter(trendsAdapter);
 
         final Button btnGetTrends = findViewById(R.id.btnGetTrends);
         btnGetTrends.setOnClickListener(v -> {
             // FIXME remove deprecated AsyncTask
-            twitter.new GetTrendsTask(trendsAdapter, trendsList).execute();
+            new GetTrendsTask().execute();
         });
 
         final Button btnSearch = findViewById(R.id.btnSearch);
@@ -54,35 +55,38 @@ public class HashtagsActivity extends AppCompatActivity {
             EditText etQuery = findViewById(R.id.etQuery);
             String query;
             query = etQuery.getText().toString();
-            new SearchHashtagTask().execute(query);
+            // TODO search twitter hashtags, not posts
         });
     }
 
-    private class SearchHashtagTask extends AsyncTask<String, Void, List<twitter4j.Status>> {
+    public class GetTrendsTask extends AsyncTask<Void, Void, ArrayList<String>> {
 
         @Override
-        protected List<twitter4j.Status> doInBackground(String... params) {
-            Log.i(TAG, "SearchHashtagTask doInBackground start.");
-
-            List<twitter4j.Status> tweets = null;
+        protected ArrayList<String> doInBackground(Void... voids) {
+            ArrayList<String> arrayList = new ArrayList<>();
 
             try {
-                Query query = new Query(params[0]);
-                QueryResult result;
-                result = twitter.getTwitterInstance().search(query);
-                tweets = result.getTweets();
+                int woeid = 23424833;
+                Trends trends = twitterInstance.getTwitter().getPlaceTrends(woeid);
+
+                for (Trend trend : trends.getTrends()) {
+                    arrayList.add(trend.getName());
+                }
             } catch (TwitterException te) {
                 te.printStackTrace();
+            } catch (NumberFormatException nfe) {
+                nfe.printStackTrace();
             }
 
-            Log.i(TAG, "SearchHashtagTask doInBackground done.");
-
-            return tweets;
+            return arrayList;
         }
 
         @Override
-        protected void onPostExecute(List<twitter4j.Status> tweets) {
-            Log.i(TAG, "onPostExecute done.");
+        protected void onPostExecute(ArrayList<String> result) {
+            if (result != null) {
+                trendsList.addAll(result);
+                trendsAdapter.notifyDataSetChanged();
+            }
         }
     }
 }
