@@ -3,8 +3,6 @@ package com.github.theopechli.zoomies;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,8 +17,8 @@ import twitter4j.TwitterException;
 
 public class PostDetailsActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter PostRepliesAdapter;
+    private RecyclerView rvPostDetails;
+    private RecyclerView.Adapter postRepliesAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private List<twitter4j.Status> postRepliesList = new ArrayList<>();
     private int[] smnLogos = {R.drawable.ic_twitter, R.drawable.ic_facebook, R.drawable.ic_instagram};
@@ -32,7 +30,7 @@ public class PostDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post_details);
 
         Intent intent = getIntent();
-        final twitter4j.Status status = (twitter4j.Status) ((ObjectWrapperForBinder) intent
+        final twitter4j.Status post = (twitter4j.Status) ((ObjectWrapperForBinder) intent
                 .getExtras().getBinder("status")).getObject();
 
         if (DataHolder.getInstance().getTwitterInstance() == null) {
@@ -42,20 +40,14 @@ public class PostDetailsActivity extends AppCompatActivity {
             twitterInstance = DataHolder.getInstance().getTwitterInstance();
         }
 
-        ImageView ivPostLogo = findViewById(R.id.ivPostLogo);
-        ivPostLogo.setImageResource(smnLogos[0]);
-
-        TextView tvPost = findViewById(R.id.tvPostDetails);
-        tvPost.setText(status.getText());
-
-        recyclerView = findViewById(R.id.rvPostReplies);
-        recyclerView.setHasFixedSize(false);
+        rvPostDetails = findViewById(R.id.rvPostDetails);
+        rvPostDetails.setHasFixedSize(false);
         layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        PostRepliesAdapter = new PostRepliesAdapter(this, postRepliesList, smnLogos);
-        recyclerView.setAdapter(PostRepliesAdapter);
+        rvPostDetails.setLayoutManager(layoutManager);
+        postRepliesAdapter = new PostRepliesAdapter(this, post, postRepliesList, smnLogos);
+        rvPostDetails.setAdapter(postRepliesAdapter);
 
-        new PostDetailsActivity.GetRepliesTask().execute(status);
+        new PostDetailsActivity.GetRepliesTask().execute(post);
     }
 
     private class GetRepliesTask extends AsyncTask<twitter4j.Status, Void, ArrayList<twitter4j.Status>> {
@@ -86,9 +78,9 @@ public class PostDetailsActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<twitter4j.Status> replies) {
-            if (replies != null) {
+            if (!replies.isEmpty()) {
                 postRepliesList.addAll(replies);
-                PostRepliesAdapter.notifyDataSetChanged();
+                postRepliesAdapter.notifyDataSetChanged();
             }
         }
     }
