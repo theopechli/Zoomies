@@ -24,14 +24,16 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     private int[] smnLogos;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView rowName;
-        public ImageView rowImage;
+        public TextView tvScreenName;
+        public TextView tvPost;
+        public ImageView ivLogo;
         public ConstraintLayout constraintLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            rowName = itemView.findViewById(R.id.tvPost);
-            rowImage = itemView.findViewById(R.id.ivLogo);
+            tvScreenName = itemView.findViewById(R.id.tvScreenName);
+            tvPost = itemView.findViewById(R.id.tvPost);
+            ivLogo = itemView.findViewById(R.id.ivLogo);
             constraintLayout = itemView.findViewById(R.id.constraintLayout);
         }
     }
@@ -53,8 +55,12 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     }
 
     public void onBindViewHolder(@NonNull PostsAdapter.ViewHolder holder, int position) {
-        holder.rowName.setText(postsList.get(position).getText());
-        holder.rowImage.setImageResource(smnLogos[0]);
+        holder.tvScreenName.setText(postsList.get(position).getUser().getScreenName());
+        holder.tvPost.setText(postsList.get(position).getText());
+        holder.tvPost.append("\n\n" + postsList.get(position).getCreatedAt());
+        holder.tvPost.append("\n\nLikes: " + postsList.get(position).getFavoriteCount());
+        holder.tvPost.append("\t\tRetweets: " + postsList.get(position).getRetweetCount());
+        holder.ivLogo.setImageResource(smnLogos[0]);
         holder.constraintLayout.setOnClickListener(view -> {
             final Bundle bundle = new Bundle();
             bundle.putBinder("status", new ObjectWrapperForBinder(postsList.get(position)));
