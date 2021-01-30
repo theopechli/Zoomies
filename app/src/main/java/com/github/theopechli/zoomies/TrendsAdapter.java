@@ -21,14 +21,14 @@ public class TrendsAdapter extends RecyclerView.Adapter<TrendsAdapter.ViewHolder
     private int twitterLogo;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView rowName;
-        public ImageView rowImage;
+        public TextView tvScreenName;
+        public ImageView ivLogo;
         public ConstraintLayout constraintLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            rowName = itemView.findViewById(R.id.tvPost);
-            rowImage = itemView.findViewById(R.id.ivLogo);
+            tvScreenName = itemView.findViewById(R.id.tvScreenName);
+            ivLogo = itemView.findViewById(R.id.ivLogo);
             constraintLayout = itemView.findViewById(R.id.constraintLayout);
         }
     }
@@ -51,8 +51,8 @@ public class TrendsAdapter extends RecyclerView.Adapter<TrendsAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TrendsAdapter.ViewHolder holder, int position) {
-        holder.rowName.setText(trendsList.get(position));
-        holder.rowImage.setImageResource(twitterLogo);
+        holder.tvScreenName.setText(trendsList.get(position));
+        holder.ivLogo.setImageResource(twitterLogo);
         holder.constraintLayout.setOnClickListener(view -> {
             Intent intent = new Intent(context, PostsActivity.class);
             intent.putExtra("com.github.theopechli.zoomies.hashtag", trendsList.get(position));
