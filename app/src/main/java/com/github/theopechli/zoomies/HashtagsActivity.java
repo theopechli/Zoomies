@@ -17,7 +17,7 @@ import twitter4j.TwitterException;
 
 public class HashtagsActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
+    private RecyclerView rvTrends;
     private RecyclerView.Adapter trendsAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<String> trendsList = new ArrayList<>();
@@ -37,12 +37,12 @@ public class HashtagsActivity extends AppCompatActivity {
             twitterInstance = DataHolder.getInstance().getTwitterInstance();
         }
 
-        recyclerView = findViewById(R.id.rvTrends);
-        recyclerView.setHasFixedSize(false);
+        rvTrends = findViewById(R.id.rvTrends);
+        rvTrends.setHasFixedSize(false);
         layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        rvTrends.setLayoutManager(layoutManager);
         trendsAdapter = new TrendsAdapter(this, trendsList, twitterLogo);
-        recyclerView.setAdapter(trendsAdapter);
+        rvTrends.setAdapter(trendsAdapter);
 
         final Button btnGetTrends = findViewById(R.id.btnGetTrends);
         btnGetTrends.setOnClickListener(v -> {
@@ -83,7 +83,7 @@ public class HashtagsActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<String> result) {
-            if (result != null) {
+            if (!result.isEmpty()) {
                 trendsList.addAll(result);
                 trendsAdapter.notifyDataSetChanged();
             }
