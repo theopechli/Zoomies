@@ -30,7 +30,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            rowName = itemView.findViewById(R.id.tvTrends);
+            rowName = itemView.findViewById(R.id.tvPost);
             rowImage = itemView.findViewById(R.id.ivLogo);
             constraintLayout = itemView.findViewById(R.id.constraintLayout);
         }
