@@ -3,7 +3,6 @@ package com.github.theopechli.zoomies;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,7 +18,7 @@ import twitter4j.TwitterException;
 
 public class PostsActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
+    private RecyclerView rvPosts;
     private RecyclerView.Adapter postsAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private List<twitter4j.Status> postsList = new ArrayList<>();
@@ -41,12 +40,12 @@ public class PostsActivity extends AppCompatActivity {
             twitterInstance = DataHolder.getInstance().getTwitterInstance();
         }
 
-        recyclerView = findViewById(R.id.rvPosts);
-        recyclerView.setHasFixedSize(false);
+        rvPosts = findViewById(R.id.rvPosts);
+        rvPosts.setHasFixedSize(false);
         layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        rvPosts.setLayoutManager(layoutManager);
         postsAdapter = new PostsAdapter(this, postsList, smnLogos);
-        recyclerView.setAdapter(postsAdapter);
+        rvPosts.setAdapter(postsAdapter);
 
         new SearchPostsTask().execute(hashtag);
     }
@@ -55,7 +54,7 @@ public class PostsActivity extends AppCompatActivity {
 
         @Override
         protected List<twitter4j.Status> doInBackground(String... params) {
-            List<twitter4j.Status> tweets = null;
+            List<twitter4j.Status> tweets = new ArrayList<>();
             try {
                 Query query = new Query(params[0]);
                 QueryResult result;
@@ -71,7 +70,7 @@ public class PostsActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(List<twitter4j.Status> tweets) {
-            if (tweets != null) {
+            if (!tweets.isEmpty()) {
                 postsList.addAll(tweets);
                 postsAdapter.notifyDataSetChanged();
             }
