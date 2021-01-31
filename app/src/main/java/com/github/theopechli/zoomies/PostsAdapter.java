@@ -57,9 +57,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull PostsAdapter.ViewHolder holder, int position) {
         holder.tvScreenName.setText(postsList.get(position).getUser().getScreenName());
         holder.tvPost.setText(postsList.get(position).getText());
-        holder.tvPost.append("\n\n" + postsList.get(position).getCreatedAt());
-        holder.tvPost.append("\n\nLikes: " + postsList.get(position).getFavoriteCount());
-        holder.tvPost.append("\t\tRetweets: " + postsList.get(position).getRetweetCount());
         holder.ivLogo.setImageResource(smnLogos[0]);
         holder.constraintLayout.setOnClickListener(view -> {
             final Bundle bundle = new Bundle();
