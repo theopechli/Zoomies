@@ -30,7 +30,15 @@ public class CreatePostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
 
-        getIntent();
+        Intent intent = getIntent();
+
+        twitter4j.Status status = null;
+        try {
+            status = (twitter4j.Status) ((ObjectWrapperForBinder) intent
+                    .getExtras().getBinder("status")).getObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (DataHolder.getInstance().getTwitterInstance() == null) {
             twitterInstance = new TwitterInstance();
@@ -48,9 +56,16 @@ public class CreatePostActivity extends AppCompatActivity {
         });
 
         Button createPost = findViewById(R.id.btnCreatePost);
+        twitter4j.Status finalStatus = status;
         createPost.setOnClickListener(v -> {
             EditText etCreatePost = findViewById(R.id.etCreatePost);
-            new CreatePostTask().execute(etCreatePost.getText().toString());
+            twitter4j.StatusUpdate statusUpdate = new StatusUpdate("@"
+                    + finalStatus.getUser().getScreenName() + " "
+                    + etCreatePost.getText().toString());
+            if (finalStatus != null) {
+                statusUpdate.setInReplyToStatusId(finalStatus.getId());
+            }
+            new CreatePostTask().execute(statusUpdate);
             etCreatePost.setText("");
         });
     }
@@ -85,8 +100,7 @@ public class CreatePostActivity extends AppCompatActivity {
             statusUpdate.setMediaIds(uploadedMedia.getMediaId());
             try {
                 twitterInstance.getTwitter().updateStatus(statusUpdate);
-            } catch (
-                    TwitterException e) {
+            } catch (TwitterException e) {
                 e.printStackTrace();
             }
 
@@ -94,12 +108,12 @@ public class CreatePostActivity extends AppCompatActivity {
         }
     }
 
-    private class CreatePostTask extends AsyncTask<String, Void, Void> {
+    private class CreatePostTask extends AsyncTask<twitter4j.StatusUpdate, Void, Void> {
 
         @Override
-        protected Void doInBackground(String... strings) {
+        protected Void doInBackground(twitter4j.StatusUpdate... statusUpdates) {
             try {
-                twitterInstance.getTwitter().updateStatus(strings[0]);
+                twitterInstance.getTwitter().updateStatus(statusUpdates[0]);
             } catch (TwitterException e) {
                 e.printStackTrace();
             }
