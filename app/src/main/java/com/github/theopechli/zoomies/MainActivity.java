@@ -8,8 +8,6 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String TAG = "MainActivity";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
