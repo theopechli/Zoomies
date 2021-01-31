@@ -7,4 +7,9 @@
         the field below and tapping search.</string>
     <string name="help_get_trends">Tap the button below to get a list of the trending hashtags
         and choose one to view the relevant posts.</string>
+    <string name="help_create_post">Create a post by filling in the following form with the desired
+        text. Optionally, upload an image, a photo, or a gif by tapping "Upload Media".</string>
+    <string name="enter_text">Enter text</string>
+    <string name="upload_media">Upload Media</string>
+    <string name="create_post">Create Post</string>
 </resources>
