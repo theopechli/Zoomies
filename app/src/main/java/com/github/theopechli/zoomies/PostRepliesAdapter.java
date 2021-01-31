@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ public class PostRepliesAdapter extends RecyclerView.Adapter<PostRepliesAdapter.
     private Status postParent;
     private List<Status> postRepliesList;
     private int[] smnLogos;
+    private View listItem;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView tvScreenName2;
@@ -56,7 +58,7 @@ public class PostRepliesAdapter extends RecyclerView.Adapter<PostRepliesAdapter.
     @Override
     public PostRepliesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View listItem = inflater.inflate(R.layout.list_item_2, parent, false);
+        listItem = inflater.inflate(R.layout.list_item_2, parent, false);
         ViewHolder viewHolder = new ViewHolder(listItem);
 
         return viewHolder;
@@ -81,6 +83,55 @@ public class PostRepliesAdapter extends RecyclerView.Adapter<PostRepliesAdapter.
             Intent intent = new Intent(context, PostDetailsActivity.class);
             intent.putExtras(bundle);
             context.startActivity(intent);
+        });
+
+        final Button btnLikePost = listItem.findViewById(R.id.btnLikePost);
+        final Button btnRetweetPost = listItem.findViewById(R.id.btnRetweetPost);
+
+        LikePost(postParent, btnLikePost);
+        RetweetPost(postParent, btnRetweetPost);
+
+        final Button btnLikePostReply = listItem.findViewById(R.id.btnLikePostReply);
+        final Button btnRetweetPostReply = listItem.findViewById(R.id.btnRetweetPostReply);
+
+        LikePost(postRepliesList.get(position), btnLikePostReply);
+        RetweetPost(postRepliesList.get(position), btnRetweetPostReply);
+    }
+
+
+    public void LikePost(twitter4j.Status status, Button button) {
+        if (status.isFavorited()) {
+            button.setText("Unlike");
+        } else {
+            button.setText("Like");
+        }
+
+        button.setOnClickListener(v -> {
+            if (button.getText().equals("Unlike")) {
+                button.setText("Like");
+                new PostDetailsActivity.UnLikePostTask().execute(status);
+            } else {
+                button.setText("Unlike");
+                new PostDetailsActivity.LikePostTask().execute(status);
+            }
+        });
+    }
+
+    public static void RetweetPost(twitter4j.Status status, Button button) {
+        if (status.isRetweeted()) {
+            button.setText("Unretweet");
+        } else {
+            button.setText("Retweet");
+        }
+
+        button.setOnClickListener(v -> {
+            if (button.getText().equals("Unretweet")) {
+                button.setText("Retweet");
+                new PostDetailsActivity.UnRetweetPostTask().execute(status);
+            } else {
+                button.setText("Unretweet");
+                new PostDetailsActivity.RetweetPostTask().execute(status);
+            }
         });
     }
 
