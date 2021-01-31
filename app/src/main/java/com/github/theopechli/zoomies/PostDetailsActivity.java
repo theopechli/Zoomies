@@ -22,7 +22,7 @@ public class PostDetailsActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private List<twitter4j.Status> postRepliesList = new ArrayList<>();
     private int[] smnLogos = {R.drawable.ic_twitter, R.drawable.ic_facebook, R.drawable.ic_instagram};
-    private TwitterInstance twitterInstance;
+    private static TwitterInstance twitterInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,7 @@ public class PostDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post_details);
 
         Intent intent = getIntent();
-        final twitter4j.Status post = (twitter4j.Status) ((ObjectWrapperForBinder) intent
+        twitter4j.Status post = (twitter4j.Status) ((ObjectWrapperForBinder) intent
                 .getExtras().getBinder("status")).getObject();
 
         if (DataHolder.getInstance().getTwitterInstance() == null) {
@@ -47,7 +47,63 @@ public class PostDetailsActivity extends AppCompatActivity {
         postRepliesAdapter = new PostRepliesAdapter(this, post, postRepliesList, smnLogos);
         rvPostDetails.setAdapter(postRepliesAdapter);
 
-        new PostDetailsActivity.GetRepliesTask().execute(post);
+        new GetRepliesTask().execute(post);
+    }
+
+    public static class LikePostTask extends AsyncTask<twitter4j.Status, Void, Void> {
+
+        @Override
+        protected Void doInBackground(twitter4j.Status... statuses) {
+            try {
+                twitterInstance.getTwitter().createFavorite(statuses[0].getId());
+            } catch (TwitterException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
+
+    public static class RetweetPostTask extends AsyncTask<twitter4j.Status, Void, Void> {
+
+        @Override
+        protected Void doInBackground(twitter4j.Status... statuses) {
+            try {
+                twitterInstance.getTwitter().retweetStatus(statuses[0].getId());
+            } catch (TwitterException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
+
+    public static class UnLikePostTask extends AsyncTask<twitter4j.Status, Void, Void> {
+
+        @Override
+        protected Void doInBackground(twitter4j.Status... statuses) {
+            try {
+                twitterInstance.getTwitter().destroyFavorite(statuses[0].getId());
+            } catch (TwitterException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
+
+    public static class UnRetweetPostTask extends AsyncTask<twitter4j.Status, Void, Void> {
+
+        @Override
+        protected Void doInBackground(twitter4j.Status... statuses) {
+            try {
+                twitterInstance.getTwitter().unRetweetStatus(statuses[0].getId());
+            } catch (TwitterException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
     }
 
     private class GetRepliesTask extends AsyncTask<twitter4j.Status, Void, ArrayList<twitter4j.Status>> {
