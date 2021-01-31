@@ -42,6 +42,21 @@
             android:background="#F8F8F8"
             android:textSize="20sp" />
 
+        <Button
+            android:id="@+id/btnLikePost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/like_post" />
+
+        <Button
+            android:id="@+id/btnRetweetPost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/retweet_post" />
     </LinearLayout>
 
     <LinearLayout
@@ -80,6 +95,22 @@
             android:layout_marginTop="16dp"
             android:background="#F8F8F8"
             android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btnLikePostReply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/like_post" />
+
+        <Button
+            android:id="@+id/btnRetweetPostReply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/retweet_post" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
