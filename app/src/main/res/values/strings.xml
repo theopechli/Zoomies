@@ -13,4 +13,6 @@
     <string name="upload_media">Upload Media</string>
     <string name="create_post">Create Post</string>
     <string name="view_posts">View Posts</string>
+    <string name="like_post">Like</string>
+    <string name="retweet_post">Retweet</string>
 </resources>
