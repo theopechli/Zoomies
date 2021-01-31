@@ -59,7 +59,7 @@ public class HashtagsActivity extends AppCompatActivity {
         });
     }
 
-    public class GetTrendsTask extends AsyncTask<Void, Void, ArrayList<String>> {
+    private class GetTrendsTask extends AsyncTask<Void, Void, ArrayList<String>> {
 
         @Override
         protected ArrayList<String> doInBackground(Void... voids) {
