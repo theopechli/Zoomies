@@ -10,7 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import twitter4j.Query;
+import twitter4j.QueryResult;
+import twitter4j.Status;
 import twitter4j.Trend;
 import twitter4j.Trends;
 import twitter4j.TwitterException;
@@ -55,7 +59,7 @@ public class HashtagsActivity extends AppCompatActivity {
             EditText etQuery = findViewById(R.id.etQuery);
             String query;
             query = etQuery.getText().toString();
-            // TODO search twitter hashtags, not posts
+            new SearchHashtagTask().execute(query);
         });
     }
 
@@ -87,6 +91,25 @@ public class HashtagsActivity extends AppCompatActivity {
                 trendsList.addAll(result);
                 trendsAdapter.notifyDataSetChanged();
             }
+        }
+    }
+
+    private class SearchHashtagTask extends AsyncTask<String, Void, List<Status>> {
+
+        @Override
+        protected List<twitter4j.Status> doInBackground(String... params) {
+            List<twitter4j.Status> tweets = null;
+
+            try {
+                Query query = new Query("#" + params[0]);
+                QueryResult result;
+                result = twitterInstance.getTwitter().search(query);
+                tweets = result.getTweets();
+            } catch (TwitterException te) {
+                te.printStackTrace();
+            }
+
+            return tweets;
         }
     }
 }
