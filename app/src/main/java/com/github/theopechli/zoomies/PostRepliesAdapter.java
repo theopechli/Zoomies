@@ -85,17 +85,37 @@ public class PostRepliesAdapter extends RecyclerView.Adapter<PostRepliesAdapter.
             context.startActivity(intent);
         });
 
-        final Button btnLikePost = listItem.findViewById(R.id.btnLikePost);
-        final Button btnRetweetPost = listItem.findViewById(R.id.btnRetweetPost);
+        final Button btnReplyToPost = listItem.findViewById(R.id.btnReplyToPost);
+        btnReplyToPost.setOnClickListener(v -> {
+            final Bundle bundle = new Bundle();
+            bundle.putBinder("status", new ObjectWrapperForBinder(postParent));
+            Intent intent = new Intent(context, CreatePostActivity.class);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+        });
 
+        final Button btnReplyToPostReply = listItem.findViewById(R.id.btnReplyToPostReply);
+        btnReplyToPostReply.setOnClickListener(v -> {
+            final Bundle bundle = new Bundle();
+            bundle.putBinder("status", new ObjectWrapperForBinder(postRepliesList.get(position)));
+            Intent intent = new Intent(context, CreatePostActivity.class);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+        });
+
+        final Button btnLikePost = listItem.findViewById(R.id.btnLikePost);
         LikePost(postParent, btnLikePost);
+
+        final Button btnRetweetPost = listItem.findViewById(R.id.btnRetweetPost);
         RetweetPost(postParent, btnRetweetPost);
 
         final Button btnLikePostReply = listItem.findViewById(R.id.btnLikePostReply);
-        final Button btnRetweetPostReply = listItem.findViewById(R.id.btnRetweetPostReply);
-
         LikePost(postRepliesList.get(position), btnLikePostReply);
+
+        final Button btnRetweetPostReply = listItem.findViewById(R.id.btnRetweetPostReply);
         RetweetPost(postRepliesList.get(position), btnRetweetPostReply);
+
+
     }
 
 
@@ -118,7 +138,7 @@ public class PostRepliesAdapter extends RecyclerView.Adapter<PostRepliesAdapter.
     }
 
     public static void RetweetPost(twitter4j.Status status, Button button) {
-        if (status.isRetweeted()) {
+        if (status.isRetweetedByMe()) {
             button.setText("Unretweet");
         } else {
             button.setText("Retweet");
