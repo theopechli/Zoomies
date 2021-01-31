@@ -23,6 +23,7 @@ import twitter4j.UploadedMedia;
 public class CreatePostActivity extends AppCompatActivity {
 
     private TwitterInstance twitterInstance;
+    private twitter4j.StatusUpdate post;
     private static int REQUEST_CODE = 0;
 
     @Override
@@ -48,8 +49,14 @@ public class CreatePostActivity extends AppCompatActivity {
         }
 
         Button uploadMedia = findViewById(R.id.btnUploadMedia);
+        /*
+         FIXME
+         If called first, `StatusUpdate post` will be null. Thus, when
+         UploadImageTask/UploadMediaTask is called, it will try to set attributes of a null object.
+         */
         uploadMedia.setOnClickListener(v -> {
             Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+            // FIXME add explicit filetypes
             chooseFile.setType("*/*");
             chooseFile = Intent.createChooser(chooseFile, "Choose a file");
             startActivityForResult(chooseFile, REQUEST_CODE);
@@ -59,33 +66,46 @@ public class CreatePostActivity extends AppCompatActivity {
         twitter4j.Status finalStatus = status;
         createPost.setOnClickListener(v -> {
             EditText etCreatePost = findViewById(R.id.etCreatePost);
-            twitter4j.StatusUpdate statusUpdate = new StatusUpdate("@"
-                    + finalStatus.getUser().getScreenName() + " "
-                    + etCreatePost.getText().toString());
+
             if (finalStatus != null) {
-                statusUpdate.setInReplyToStatusId(finalStatus.getId());
+                post = new StatusUpdate("@" + finalStatus.getUser().getScreenName() + " "
+                        + etCreatePost.getText().toString());
+                post.setInReplyToStatusId(finalStatus.getId());
+            } else {
+                post = new StatusUpdate(etCreatePost.getText().toString());
             }
-            new CreatePostTask().execute(statusUpdate);
+
+            new CreatePostTask().execute(post);
             etCreatePost.setText("");
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != REQUEST_CODE || resultCode != RESULT_OK) {
+            return;
+        }
+
+        // FIXME media type unrecognized
+        new UploadImageTask(post).execute(data.getData());
+        // FIXME chunked upload failed
+        // new UploadMediaTask(statusUpdate).execute(data.getData());
+    }
+
     private class UploadMediaTask extends AsyncTask<Uri, Void, Void> {
+
+        private StatusUpdate statusUpdate;
+
+        public UploadMediaTask(StatusUpdate statusUpdate) {
+            this.statusUpdate = statusUpdate;
+        }
 
         @Override
         protected Void doInBackground(Uri... uris) {
             UploadedMedia uploadedMedia = null;
 
-            final String docId = DocumentsContract.getDocumentId(uris[0]);
-            final String[] split = docId.split(":");
-            final String type = split[0];
-            String filePath = "";
-
-            if ("primary".equalsIgnoreCase(type)) {
-                filePath = Environment.getExternalStorageDirectory() + "/" + split[1];
-            }
-
-            File file = new File(filePath);
+            File file = new File(GetFile(uris[0]));
 
             try {
                 uploadedMedia = twitterInstance.getTwitter().uploadMediaChunked(file.getName()
@@ -96,13 +116,25 @@ public class CreatePostActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            StatusUpdate statusUpdate = new StatusUpdate("test upload video");
             statusUpdate.setMediaIds(uploadedMedia.getMediaId());
-            try {
-                twitterInstance.getTwitter().updateStatus(statusUpdate);
-            } catch (TwitterException e) {
-                e.printStackTrace();
-            }
+
+            return null;
+        }
+    }
+
+    private class UploadImageTask extends AsyncTask<Uri, Void, Void> {
+
+        private StatusUpdate statusUpdate;
+
+        public UploadImageTask(StatusUpdate statusUpdate) {
+            this.statusUpdate = statusUpdate;
+        }
+
+        @Override
+        protected Void doInBackground(Uri... uris) {
+            File image = new File(GetFile(uris[0]));
+
+            statusUpdate.setMedia(image);
 
             return null;
         }
@@ -120,15 +152,18 @@ public class CreatePostActivity extends AppCompatActivity {
 
             return null;
         }
+
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode != REQUEST_CODE || resultCode != RESULT_OK) {
-            return;
+    public String GetFile(Uri uri) {
+        final String docId = DocumentsContract.getDocumentId(uri);
+        final String[] split = docId.split(":");
+        final String type = split[0];
+
+        if ("primary".equalsIgnoreCase(type)) {
+            return Environment.getExternalStorageDirectory() + "/" + split[1];
         }
 
-        new UploadMediaTask().execute(data.getData());
+        return null;
     }
 }
