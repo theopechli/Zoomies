@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -75,7 +76,19 @@ public class CreatePostActivity extends AppCompatActivity {
                 post = new StatusUpdate(etCreatePost.getText().toString());
             }
 
-            new CreatePostTask().execute(post);
+            CheckBox cbTwitter = findViewById(R.id.cbTwitter);
+            if (cbTwitter.isChecked()) {
+                cbTwitter.setChecked(false);
+                new CreatePostTask().execute(post);
+            }
+            CheckBox cbFacebook = findViewById(R.id.cbFacebook);
+            if (cbFacebook.isChecked()) {
+                cbFacebook.setChecked(false);
+            }
+            CheckBox cbInstagram = findViewById(R.id.cbInstagram);
+            if (cbInstagram.isChecked()) {
+                cbInstagram.setChecked(false);
+            }
             etCreatePost.setText("");
         });
     }
